@@ -25,12 +25,14 @@
     
     NSString* UrlStr = @"user/mylist/536/2"  ;
     
-    [JHNetWorkTools requestURL:UrlStr httpMethod:METHOD_GET params:nil complection:^(id result) {
-        
-        NSLog(@"---  >%@",result);
+    [JHNetWorkTools requestURL:UrlStr httpMethod:METHOD_GET params:nil complection:^(id responseObject) {
+         NSLog(@"<--->%@",responseObject);
+    } failed:^(NSError *error) {
+         NSLog(@"--->%@",error);
     }];
-    [JHNetWorkTools requestAFURL:UrlStr httpMethod:METHOD_GET parameters:nil succeed:^(id result) {
-        NSLog(@"%@",result);
+    
+    [JHNetWorkTools requestAFURL:UrlStr httpMethod:METHOD_GET parameters:nil succeed:^(id responseObject) {
+        NSLog(@"%@",responseObject);
     } failure:^(NSError * error) {
         NSLog(@"%@",error);
     }];

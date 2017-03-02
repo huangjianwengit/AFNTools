@@ -9,19 +9,18 @@
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
 
+typedef void (^SuccessBlock)(id responseObject);
+typedef void (^FailedBlock)(NSError*error);
+
+#define BASE_URL @"http://112.74.100.122:9087/hct/api/"
 #pragma mark 网络请求类型
 
-//enum HTTPMETHOD{
-//    
-//    METHOD_GET   = 0,    //GET请求
-//    METHOD_POST  = 1,    //POST请求
-//};
 typedef NS_ENUM(NSInteger,HTTPMETHOD)
 {
     METHOD_GET   = 0,    //GET请求
     METHOD_POST  = 1,    //POST请求
 };
-#define BASE_URL @"http://112.74.100.122:9087/hct/api/"
+
 
 @interface JHNetWorkTools : NSObject
 
@@ -34,48 +33,28 @@ typedef NS_ENUM(NSInteger,HTTPMETHOD)
 /**
  * iOS自带网络请求框架
  */
-+ (void)requestURL:(NSString *)urlstring
-        httpMethod:(NSInteger)method
-            params:(NSMutableDictionary *)params
-       complection:(void(^)(id result))block;
-
++ (void)requestURL:(NSString *)urlstring httpMethod:(NSInteger)method params:(NSMutableDictionary *)params complection:(SuccessBlock)SuccessBlock failed:(FailedBlock)failedBlock;
 /**
  * AF数据请求
  */
-+(void)requestAFURL:(NSString *)URLString
-         httpMethod:(NSInteger)method
-         parameters:(id)parameters
-            succeed:(void (^)(id result))succeed
-            failure:(void (^)(NSError * error ))failure;
++(void)requestAFURL:(NSString *)URLString httpMethod:(NSInteger)method parameters:(id)parameters succeed:(SuccessBlock)successBlock failure:(FailedBlock)failedBlock;
 
 
 /**
  * 上传单张图片
  */
-+(void)requestAFURL:(NSString *)URLString
-         parameters:(id)parameters
-          imageData:(NSData *)imageData
-            succeed:(void (^)(id))succeed
-            failure:(void (^)(NSError *))failure;
++(void)requestAFURL:(NSString *)URLString parameters:(id)parameters imageData:(NSData *)imageData succeed:(SuccessBlock)successBlock failure:(FailedBlock)failedBlock;
 
 
 /**
  * 上传多张图片
  */
-+(void)requestAFURL:(NSString *)URLString
-         parameters:(id)parameters
-     imageDataArray:(NSArray *)imageDataArray
-            succeed:(void (^)(id))succeed
-            failure:(void (^)(NSError *))failure;
++(void)requestAFURL:(NSString *)URLString parameters:(id)parameters  imageDataArray:(NSArray *)imageDataArray succeed:(SuccessBlock)successBlock failure:(FailedBlock)failedBlock;
 
 /**
  * 上传文件
  */
-+(void)requestAFURL:(NSString *)URLString
-         parameters:(id)parameters
-           fileData:(NSData *)fileData
-            succeed:(void (^)(id))succeed
-            failure:(void (^)(NSError *))failure;
++(void)requestAFURL:(NSString *)URLString parameters:(id)parameters fileData:(NSData *)fileData succeed:(SuccessBlock)successBlock  failure:(FailedBlock)failedBlock;
 
 /*json
  * @brief 把格式化的JSON格式的字符串转换成字典

@@ -30,7 +30,7 @@
 + (void)requestURL:(NSString *)urlstring
         httpMethod:(NSInteger)method
             params:(NSMutableDictionary *)params
-       complection:(void(^)(id result))block{
+       complection:(SuccessBlock)SuccessBlock failed:(FailedBlock)failedBlock{
     
     //1.构造URL
     urlstring = [BASE_URL stringByAppendingString:urlstring];
@@ -91,6 +91,7 @@
         
         if (connectionError != nil) {
             NSLog(@"网络请求失败 : %@",connectionError);
+            failedBlock(connectionError);
             return ;
         }
         
@@ -102,7 +103,7 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             
             //回调block
-            block(result);
+           SuccessBlock(result);
             
         });
     }];
@@ -115,8 +116,8 @@
 +(void)requestAFURL:(NSString *)URLString
          httpMethod:(NSInteger)method
          parameters:(id)parameters
-            succeed:(void (^)(id result))succeed
-            failure:(void (^)(NSError * error ))failure
+            succeed:(SuccessBlock)successBlock
+            failure:(FailedBlock)failedBlock
 {
     // 0.设置API地址
     URLString = [NSString stringWithFormat:@"%@%@",BASE_URL,[URLString stringByReplacingOccurrencesOfString:@" " withString:@"%20"]];
@@ -141,18 +142,15 @@
             [manager GET:URLString parameters:nil progress:nil success:^(NSURLSessionDataTask *task, id responseObject) {
                 
                 NSString *responseStr =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+               
+                successBlock([JHNetWorkTools dictionaryWithJsonString:responseStr]);
                 
-                succeed([JHNetWorkTools dictionaryWithJsonString:responseStr]);
-                
-              //  NSLog(@"\n 请求成功:%@\n\n",[JHNetWorkTools dictionaryWithJsonString:responseStr]);
                 
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 
-                failure(error);
+                failedBlock(error);
                 
                 
-                
-                NSLog(@"\n 请求失败:%@\n\n",error);
             }];
         }
             break;
@@ -163,17 +161,14 @@
                 
                 NSString *responseStr =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
                 
-                succeed([JHNetWorkTools dictionaryWithJsonString:responseStr]);
-                
-             //   NSLog(@"\n 请求成功:%@\n\n",[JHNetWorkTools dictionaryWithJsonString:responseStr]);
+                successBlock([JHNetWorkTools dictionaryWithJsonString:responseStr]);
+        
                 
             } failure:^(NSURLSessionDataTask *task, NSError *error) {
                 
               
+                failedBlock(error);
                 
-                failure(error);
-                
-                NSLog(@"\n 请求失败:%@\n\n",error);
                 
             }];
         }
@@ -191,8 +186,8 @@
 +(void)requestAFURL:(NSString *)URLString
          parameters:(id)parameters
           imageData:(NSData *)imageData
-            succeed:(void (^)(id))succeed
-            failure:(void (^)(NSError *))failure
+            succeed:(SuccessBlock)successBlock
+            failure:(FailedBlock)failedBlock
 {
     // 0.设置API地址
     URLString = [NSString stringWithFormat:@"%@%@",BASE_URL,[URLString stringByReplacingOccurrencesOfString:@" " withString:@"%20"]];
@@ -228,11 +223,11 @@
         
         NSString *responseStr =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
-        succeed([JHNetWorkTools dictionaryWithJsonString:responseStr]);
+        successBlock([JHNetWorkTools dictionaryWithJsonString:responseStr]);
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
-        failure(error);
+        failedBlock(error);
     }];
 }
 
@@ -243,8 +238,8 @@
 +(void)requestAFURL:(NSString *)URLString
          parameters:(id)parameters
      imageDataArray:(NSArray *)imageDataArray
-            succeed:(void (^)(id))succeed
-            failure:(void (^)(NSError *))failure
+            succeed:(SuccessBlock)successBlock
+            failure:(FailedBlock)failedBlock
 {
     // 0.设置API地址
     URLString = [NSString stringWithFormat:@"%@%@",BASE_URL,[URLString stringByReplacingOccurrencesOfString:@" " withString:@"%20"]];
@@ -287,11 +282,11 @@
         
         NSString *responseStr =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
-        succeed([JHNetWorkTools dictionaryWithJsonString:responseStr]);
+        successBlock([JHNetWorkTools dictionaryWithJsonString:responseStr]);
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
-        failure(error);
+        failedBlock(error);
     }];
 }
 
@@ -302,8 +297,8 @@
 +(void)requestAFURL:(NSString *)URLString
          parameters:(id)parameters
            fileData:(NSData *)fileData
-            succeed:(void (^)(id))succeed
-            failure:(void (^)(NSError *))failure
+            succeed:(SuccessBlock)successBlock
+            failure:(FailedBlock)failedBlock
 {
     // 0.设置API地址
     URLString = [NSString stringWithFormat:@"%@%@",BASE_URL,[URLString stringByReplacingOccurrencesOfString:@" " withString:@"%20"]];
@@ -332,11 +327,11 @@
         
         NSString *responseStr =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         
-        succeed([JHNetWorkTools dictionaryWithJsonString:responseStr]);
+        successBlock([JHNetWorkTools dictionaryWithJsonString:responseStr]);
         
     } failure:^(NSURLSessionDataTask *task, NSError *error) {
         
-        failure(error);
+        failedBlock(error);
     }];
 }
 
